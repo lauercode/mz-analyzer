@@ -14,6 +14,22 @@ let partidas=[];
 
 let partidasFiltradas=[];
 
+const btnTema=document.getElementById("btnTema");
+
+const temaSalvo=localStorage.getItem("tema") || "dark";
+
+aplicarTema(temaSalvo);
+
+btnTema.onclick=()=>{
+
+    const novoTema=document.body.classList.contains("light")
+        ? "dark"
+        : "light";
+
+    aplicarTema(novoTema);
+
+};
+
 ///////////////////////////////////////////////////////////////
 
 function analisar(){
@@ -399,5 +415,23 @@ function converterData(dataTexto) {
     const ano = parseInt(partes[2]);
 
     return new Date(ano, mes, dia);
+
+}
+
+function aplicarTema(tema){
+
+    if(tema==="light"){
+
+        document.body.classList.add("light");
+        btnTema.textContent="☀️";
+
+    }else{
+
+        document.body.classList.remove("light");
+        btnTema.textContent="🌙";
+
+    }
+
+    localStorage.setItem("tema",tema);
 
 }

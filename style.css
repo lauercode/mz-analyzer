@@ -2,6 +2,97 @@
 /* ManagerZone Analyzer 2.0      */
 /* ============================= */
 
+/* ============================= */
+/* Temas                         */
+/* ============================= */
+
+:root{
+
+    /* Fundo */
+    --bg:#121212;
+    --bg-secondary:#1d1d1d;
+    --card:#1f1f1f;
+
+    /* Texto */
+    --text:#f5f5f5;
+    --text-secondary:#cccccc;
+
+    /* Cores principais */
+    --title:#4da3ff;
+    --primary:#1b4f72;
+
+    /* Inputs */
+    --input-bg:#2b2b2b;
+    --input-border:#555;
+
+    /* Bordas */
+    --border:#444;
+
+    /* Hover */
+    --hover:#2a3b4d;
+
+    /* Sombras */
+    --shadow:0 2px 8px rgba(0,0,0,.45);
+
+    /* Filtros */
+    --filter-bg:#242424;
+
+    /* Rodapé */
+    --footer:#111827;
+
+    /* Linhas da tabela */
+    --table-even:#191919;
+
+    /* Vitória / Empate / Derrota */
+    --win:#214d21;
+    --win-hover:#2f6f2f;
+
+    --draw:#5c5318;
+    --draw-hover:#7b6e1e;
+
+    --loss:#5b2222;
+    --loss-hover:#7b3030;
+
+}
+
+body.light{
+
+    --bg:#f3f5f7;
+    --bg-secondary:#ffffff;
+    --card:#ffffff;
+
+    --text:#222;
+    --text-secondary:#555;
+
+    --title:#1b4f72;
+    --primary:#1b4f72;
+
+    --input-bg:white;
+    --input-border:#bbb;
+
+    --border:#ddd;
+
+    --hover:#d6eaf8;
+
+    --shadow:0 2px 8px rgba(0,0,0,.15);
+
+    --filter-bg:#ececec;
+
+    --footer:#1d3557;
+
+    --table-even:#f7f7f7;
+
+    --win:#d5f5d5;
+    --win-hover:#b8e6b8;
+
+    --draw:#fff7cc;
+    --draw-hover:#ffe999;
+
+    --loss:#ffd6d6;
+    --loss-hover:#ffb8b8;
+
+}
+
 *{
     margin:0;
     padding:0;
@@ -11,21 +102,16 @@
 body{
 
     font-family:Arial, Helvetica, sans-serif;
-
-    background:#f3f5f7;
-
-    color:#222;
+    background:var(--bg);
+	color:var(--text);
 
 }
 
 .container{
 
     width:95%;
-
     max-width:1700px;
-
     margin:auto;
-
     padding:20px;
 
 }
@@ -33,20 +119,16 @@ body{
 h1{
 
     text-align:center;
-
     margin-bottom:25px;
-
-    color:#1b4f72;
+    color:var(--title);
 
 }
 
 h2{
 
     margin-top:25px;
-
     margin-bottom:12px;
-
-    color:#1b4f72;
+    color:var(--title);
 
 }
 
@@ -57,22 +139,15 @@ h2{
 textarea{
 
     width:100%;
-
     height:280px;
-
     resize:vertical;
-
     padding:12px;
-
     font-size:14px;
-
     font-family:Consolas, monospace;
-
-    border:1px solid #bbb;
-
     border-radius:6px;
-
-    background:white;
+    border:1px solid var(--input-border);
+	background:var(--input-bg);
+	color:var(--text);
 
 }
 
@@ -81,7 +156,6 @@ textarea{
 .buttons{
 
     margin-top:15px;
-
     margin-bottom:15px;
 
 }
@@ -89,17 +163,11 @@ textarea{
 button{
 
     padding:12px 24px;
-
     font-size:15px;
-
     cursor:pointer;
-
     border:none;
-
     border-radius:6px;
-
     margin-right:10px;
-
     transition:.25s;
 
 }
@@ -107,7 +175,6 @@ button{
 #btnAnalisar{
 
     background:#27ae60;
-
     color:white;
 
 }
@@ -121,7 +188,6 @@ button{
 #btnLimpar{
 
     background:#c0392b;
-
     color:white;
 
 }
@@ -139,25 +205,18 @@ button{
 #dashboard{
 
     display:grid;
-
     grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-
     gap:18px;
-
     margin-top:20px;
 
 }
 
 .card{
 
-    background:white;
-
+    background:var(--card);
     border-radius:10px;
-
     padding:18px;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
-
+    box-shadow:var(--shadow);
     text-align:center;
 
 }
@@ -165,7 +224,6 @@ button{
 .card h2{
 
     font-size:16px;
-
     margin-bottom:10px;
 
 }
@@ -173,10 +231,8 @@ button{
 .card span{
 
     font-size:30px;
-
     font-weight:bold;
-
-    color:#1b4f72;
+    color:var(--title);
 
 }
 
@@ -187,23 +243,18 @@ button{
 table{
 
     width:100%;
-
     border-collapse:collapse;
-
-    background:white;
-
+    background:var(--card);
     margin-top:12px;
-
-    box-shadow:0 2px 6px rgba(0,0,0,.12);
+    box-shadow:var(--shadow);
+	color:var(--text);
 
 }
 
 th{
 
     background:#1b4f72;
-
     color:white;
-
     padding:10px;
 
 }
@@ -211,22 +262,20 @@ th{
 td{
 
     padding:9px;
-
-    border-bottom:1px solid #ddd;
-
+    border-bottom:1px solid var(--border);
     text-align:center;
 
 }
 
 tbody tr:nth-child(even){
 
-    background:#f7f7f7;
+    background:var(--table-even);
 
 }
 
 tbody tr:hover{
 
-    background:#d6eaf8;
+    background:var(--hover);
 
 }
 
@@ -237,25 +286,18 @@ tbody tr:hover{
 .graficos{
 
     display:grid;
-
     grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
-
     gap:30px;
-
     margin-top:20px;
 
 }
 
 .graficos canvas{
 
-    background:white;
-
+    background:var(--card);
     border-radius:10px;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
-
+    box-shadow:var(--shadow);
     padding:15px;
-
     height:350px !important;
 
 }
@@ -265,10 +307,8 @@ tbody tr:hover{
 hr{
 
     margin:35px 0;
-
     border:none;
-
-    border-top:1px solid #ddd;
+    border-top:1px solid var(--border);
 
 }
 
@@ -303,7 +343,6 @@ hr{
     button{
 
         width:100%;
-
         margin-bottom:10px;
 
     }
@@ -316,147 +355,174 @@ hr{
 
 #tabelaJogos tbody tr.vitoria{
 
-    background:#d5f5d5;
+    background:var(--win);
 
 }
 
 #tabelaJogos tbody tr.vitoria:hover{
 
-    background:#b8e6b8;
+    background:var(--win-hover);
 
 }
 
 #tabelaJogos tbody tr.empate{
 
-    background:#fff7cc;
+    background:var(--draw);
 
 }
 
 #tabelaJogos tbody tr.empate:hover{
 
-    background:#ffe999;
+    background:var(--draw-hover);
 
 }
 
 #tabelaJogos tbody tr.derrota{
 
-    background:#ffd6d6;
+    background:var(--loss);
 
 }
 
 #tabelaJogos tbody tr.derrota:hover{
 
-    background:#ffb8b8;
+    background:var(--loss-hover);
 
 }
 
 .filtros{
-
-display:flex;
-
-flex-wrap:wrap;
-
-gap:15px;
-
-margin:20px 0;
-
-padding:15px;
-
-background:#ececec;
-
-border-radius:8px;
-
-align-items:flex-end;
+	
+	display:flex;
+	flex-wrap:wrap;
+	gap:15px;
+	margin:20px 0;
+	padding:15px;
+	background:var(--filter-bg);
+	border-radius:8px;
+	align-items:flex-end;
 
 }
 
 .filtro{
-
-display:flex;
-
-flex-direction:column;
+	
+	display:flex;
+	flex-direction:column;
 
 }
 
 .filtro label{
-
-font-weight:bold;
-
-margin-bottom:5px;
+	
+	font-weight:bold;
+	margin-bottom:5px;
 
 }
 
 .filtro select,
 .filtro input{
-
-padding:6px;
-
-min-width:150px;
+	
+	padding:6px;
+	min-width:150px;
 
 }
 
 #btnLimparFiltros{
-
-padding:8px 20px;
-
-cursor:pointer;
+	
+	padding:8px 20px;
+	cursor:pointer;
 
 }
 
 .footer{
+	
     margin-top:50px;
-    background:#1d3557;
+    background:var(--footer);
     color:white;
     padding:25px 15px;
     border-top:4px solid #4CAF50;
+	
 }
 
 .footer-content{
+	
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
     flex-wrap:wrap;
     gap:30px;
+	
 }
 
 .footer-left,
 .footer-center,
 .footer-right{
-    flex:1;
+    
+	flex:1;
     min-width:220px;
+	
 }
 
 .footer h3{
-    margin-top:0;
+    
+	margin-top:0;
     margin-bottom:10px;
+	
 }
 
 .footer p{
-    margin:5px 0;
-    color:#ddd;
+    
+	margin:5px 0;
+    color:var(--text-secondary);
+	
 }
 
 .footer-right{
-    display:flex;
+    
+	display:flex;
     flex-direction:column;
     gap:10px;
+	
 }
 
 .footer-right a{
-    color:#90caf9;
+    
+	color:#90caf9;
     text-decoration:none;
     font-weight:bold;
+	
 }
 
 .footer-right a:hover{
-    text-decoration:underline;
+    
+	text-decoration:underline;
+	
 }
 
 .footer-copy{
-    margin-top:25px;
+    
+	margin-top:25px;
     border-top:1px solid rgba(255,255,255,.2);
     padding-top:15px;
     text-align:center;
-    color:#bbb;
+    color:var(--text-secondary);
     font-size:13px;
+	
+}
+
+.topbar{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+}
+
+#btnTema{
+
+    padding:10px 18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:18px;
+    background:var(--primary);
+    color:white;
+
 }
