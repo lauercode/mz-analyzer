@@ -1,0 +1,404 @@
+/* ============================= */
+/* ManagerZone Analyzer 2.0      */
+/* ============================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#f3f5f7;
+
+    color:#222;
+
+}
+
+.container{
+
+    width:95%;
+
+    max-width:1700px;
+
+    margin:auto;
+
+    padding:20px;
+
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+    color:#1b4f72;
+
+}
+
+h2{
+
+    margin-top:25px;
+
+    margin-bottom:12px;
+
+    color:#1b4f72;
+
+}
+
+/* ============================= */
+/* Área de entrada               */
+/* ============================= */
+
+textarea{
+
+    width:100%;
+
+    height:280px;
+
+    resize:vertical;
+
+    padding:12px;
+
+    font-size:14px;
+
+    font-family:Consolas, monospace;
+
+    border:1px solid #bbb;
+
+    border-radius:6px;
+
+    background:white;
+
+}
+
+/* ============================= */
+
+.buttons{
+
+    margin-top:15px;
+
+    margin-bottom:15px;
+
+}
+
+button{
+
+    padding:12px 24px;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    border:none;
+
+    border-radius:6px;
+
+    margin-right:10px;
+
+    transition:.25s;
+
+}
+
+#btnAnalisar{
+
+    background:#27ae60;
+
+    color:white;
+
+}
+
+#btnAnalisar:hover{
+
+    background:#1e8449;
+
+}
+
+#btnLimpar{
+
+    background:#c0392b;
+
+    color:white;
+
+}
+
+#btnLimpar:hover{
+
+    background:#922b21;
+
+}
+
+/* ============================= */
+/* Dashboard                     */
+/* ============================= */
+
+#dashboard{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:18px;
+
+    margin-top:20px;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:10px;
+
+    padding:18px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+
+    text-align:center;
+
+}
+
+.card h2{
+
+    font-size:16px;
+
+    margin-bottom:10px;
+
+}
+
+.card span{
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    color:#1b4f72;
+
+}
+
+/* ============================= */
+/* Tabelas                       */
+/* ============================= */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+    margin-top:12px;
+
+    box-shadow:0 2px 6px rgba(0,0,0,.12);
+
+}
+
+th{
+
+    background:#1b4f72;
+
+    color:white;
+
+    padding:10px;
+
+}
+
+td{
+
+    padding:9px;
+
+    border-bottom:1px solid #ddd;
+
+    text-align:center;
+
+}
+
+tbody tr:nth-child(even){
+
+    background:#f7f7f7;
+
+}
+
+tbody tr:hover{
+
+    background:#d6eaf8;
+
+}
+
+/* ============================= */
+/* Gráficos                      */
+/* ============================= */
+
+.graficos{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(420px,1fr));
+
+    gap:30px;
+
+    margin-top:20px;
+
+}
+
+.graficos canvas{
+
+    background:white;
+
+    border-radius:10px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+
+    padding:15px;
+
+    height:350px !important;
+
+}
+
+/* ============================= */
+
+hr{
+
+    margin:35px 0;
+
+    border:none;
+
+    border-top:1px solid #ddd;
+
+}
+
+/* ============================= */
+/* Responsivo                    */
+/* ============================= */
+
+@media(max-width:900px){
+
+    .graficos{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:650px){
+
+    .card span{
+
+        font-size:24px;
+
+    }
+
+    table{
+
+        font-size:12px;
+
+    }
+
+    button{
+
+        width:100%;
+
+        margin-bottom:10px;
+
+    }
+
+}
+
+/* ============================= */
+/* Cores da tabela de partidas   */
+/* ============================= */
+
+#tabelaJogos tbody tr.vitoria{
+
+    background:#d5f5d5;
+
+}
+
+#tabelaJogos tbody tr.vitoria:hover{
+
+    background:#b8e6b8;
+
+}
+
+#tabelaJogos tbody tr.empate{
+
+    background:#fff7cc;
+
+}
+
+#tabelaJogos tbody tr.empate:hover{
+
+    background:#ffe999;
+
+}
+
+#tabelaJogos tbody tr.derrota{
+
+    background:#ffd6d6;
+
+}
+
+#tabelaJogos tbody tr.derrota:hover{
+
+    background:#ffb8b8;
+
+}
+
+.filtros{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:15px;
+
+margin:20px 0;
+
+padding:15px;
+
+background:#ececec;
+
+border-radius:8px;
+
+align-items:flex-end;
+
+}
+
+.filtro{
+
+display:flex;
+
+flex-direction:column;
+
+}
+
+.filtro label{
+
+font-weight:bold;
+
+margin-bottom:5px;
+
+}
+
+.filtro select,
+.filtro input{
+
+padding:6px;
+
+min-width:150px;
+
+}
+
+#btnLimparFiltros{
+
+padding:8px 20px;
+
+cursor:pointer;
+
+}

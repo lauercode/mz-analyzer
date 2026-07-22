@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>ManagerZone Analyzer 2.0</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>⚽ ManagerZone Analyzer 2.0</h1>
+
+<div class="top">
+
+<textarea
+id="input"
+placeholder="Cole aqui o histórico de partidas do ManagerZone"></textarea>
+
+</div>
+
+<div class="buttons">
+
+<button id="btnAnalisar">
+
+📊 Analisar
+
+</button>
+
+<button id="btnLimpar">
+
+🗑 Limpar
+
+</button>
+
+</div>
+
+<hr>
+
+<div id="dashboard">
+
+<div class="card">
+
+<h2>Total de Jogos</h2>
+
+<span id="totalJogos">0</span>
+
+</div>
+
+<div class="card">
+
+<h2>Vitórias</h2>
+
+<span id="vitorias">0</span>
+
+</div>
+
+<div class="card">
+
+<h2>Empates</h2>
+
+<span id="empates">0</span>
+
+</div>
+
+<div class="card">
+
+<h2>Derrotas</h2>
+
+<span id="derrotas">0</span>
+
+</div>
+
+<div class="card">
+
+<h2>Gols Pró</h2>
+
+<span id="golsPro">0</span>
+
+</div>
+
+<div class="card">
+
+<h2>Gols Contra</h2>
+
+<span id="golsContra">0</span>
+
+</div>
+
+</div>
+
+<hr>
+
+<h2>Resumo por Categoria</h2>
+
+<table id="tabelaCategorias">
+
+<thead>
+
+<tr>
+
+<th>Categoria</th>
+
+<th>J</th>
+
+<th>V</th>
+
+<th>E</th>
+
+<th>D</th>
+
+<th>GP</th>
+
+<th>GC</th>
+
+<th>%</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+<hr>
+
+<h2>Gráficos</h2>
+
+<div class="graficos">
+
+<canvas id="graficoResultados"></canvas>
+
+<canvas id="graficoCategorias"></canvas>
+
+<canvas id="graficoGols"></canvas>
+
+<canvas id="graficoPizza"></canvas>
+
+</div>
+
+<hr>
+
+<h2>Partidas Encontradas</h2>
+
+<div id="painelFiltros" class="filtros">
+
+    <div class="filtro">
+        <label>Categoria</label>
+        <select id="filtroCategoria">
+            <option value="">Todas</option>
+        </select>
+    </div>
+
+    <div class="filtro">
+        <label>Competição</label>
+        <select id="filtroCompeticao">
+            <option value="">Todas</option>
+        </select>
+    </div>
+
+    <div class="filtro">
+        <label>Data inicial</label>
+        <input type="date" id="dataInicio">
+    </div>
+
+    <div class="filtro">
+        <label>Data final</label>
+        <input type="date" id="dataFim">
+    </div>
+
+    <div class="filtro">
+        <label>Local</label>
+
+        <select id="filtroLocal">
+            <option value="">Casa e Fora</option>
+            <option value="CASA">Casa</option>
+            <option value="FORA">Fora</option>
+        </select>
+    </div>
+
+    <button id="btnLimparFiltros">
+        Limpar
+    </button>
+
+</div>
+
+<table id="tabelaJogos">
+
+<thead>
+
+<tr>
+
+<th>Data</th>
+
+<th>Categoria</th>
+
+<th>Mandante</th>
+
+<th>Placar</th>
+
+<th>Visitante</th>
+
+<th>Resultado</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+</div>
+
+<script src="parser.js"></script>
+
+<script src="statistics.js"></script>
+
+<script src="charts.js"></script>
+
+<script src="dashboard.js"></script>
+
+</body>
+
+</html>
