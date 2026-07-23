@@ -15,65 +15,89 @@ function parseManagerZone(texto) {
     const jogos = [];
 
     let dataAtual = "";
+    let i = 0;
 
-    for (let i=0; i<linhas.length; i++) {
+    while (i < linhas.length) {
 
-        const linha = linhas[i];
-
-        // -----------------------
+        //---------------------------------------
         // DATA
-        // -----------------------
+        //---------------------------------------
 
-        if (/^\d{2}-\d{2}-\d{4}$/.test(linha)) {
-            dataAtual = linha;
+        if (/^\d{2}-\d{2}-\d{4}$/.test(linhas[i])) {
+            dataAtual = linhas[i];
+            i++;
             continue;
         }
 
-        // -----------------------
+        //---------------------------------------
         // HORÁRIO
-        // -----------------------
+        //---------------------------------------
 
-        if (!/^\d{2}:\d{2}$/.test(linha))
+        if (!/^\d{2}:\d{2}$/.test(linhas[i])) {
+            i++;
+            continue;
+        }
+
+        const horario = linhas[i++];
+        if (i >= linhas.length) break;
+
+        //---------------------------------------
+        // CAMPEONATO
+        //---------------------------------------
+
+        const campeonato = linhas[i++];
+        if (i+2 >= linhas.length) break;
+
+        //---------------------------------------
+        // TIMES E PLACAR
+        //---------------------------------------
+
+        const mandante = linhas[i++];
+        const placar = linhas[i++];
+        const visitante = linhas[i++];
+
+        if (!/^\d+\s*-\s*\d+$/.test(placar))
             continue;
 
-        const horario = linha;
+        //---------------------------------------
+        // TÁTICA (opcional)
+        //---------------------------------------
 
-        if (i+6>=linhas.length)
-            continue;
+        let categoria = "Sem tática";
 
-        const campeonato = linhas[i+1];
-        const time1 = linhas[i+2];
-        const placar = linhas[i+3];
-        const time2 = linhas[i+4];
-        const categoria = linhas[i+5];
+        if (i < linhas.length) {
+            const prox = linhas[i];
+            const ehHorario = /^\d{2}:\d{2}$/.test(prox);
+            const ehData = /^\d{2}-\d{2}-\d{4}$/.test(prox);
 
-        if (!placar.match(/^\d+\s*-\s*\d+$/))
-            continue;
+            if (!ehHorario && !ehData) {
+                categoria = prox;
+                i++;
+            }
+        }
 
         const gols = placar.split("-");
         const golsCasa = parseInt(gols[0]);
         const golsFora = parseInt(gols[1]);
 
-        let resultado = "";
-        let gp = 0;
-        let gc = 0;
+        let gp,gc;
 
-        if (time1 === nomeTime) {
+        if (mandante === nomeTime) {
             gp = golsCasa;
             gc = golsFora;
-        } else if (time2 === nomeTime) {
+        } else if (visitante === nomeTime) {
             gp = golsFora;
             gc = golsCasa;
         } else {
             continue;
         }
 
+        let resultado = "E";
+
         if (gp > gc) {
-            resultado="V";
+            resultado = "V";
         } else if (gp < gc) {
-            resultado="D";
-        } else {
-            resultado="E";
+            resultado = "D";
         }
 
         jogos.push({
@@ -81,8 +105,8 @@ function parseManagerZone(texto) {
             horario,
             campeonato,
             categoria,
-            mandante:time1,
-            visitante:time2,
+            mandante,
+            visitante,
             golsMandante:golsCasa,
             golsVisitante:golsFora,
             golsPro:gp,
@@ -94,7 +118,7 @@ function parseManagerZone(texto) {
     return jogos;
 }
 
-function detectarTimePrincipal(texto){
+function detectarTimePrincipal(texto) {
 
     const linhas = texto
         .split(/\r?\n/)
