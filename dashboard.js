@@ -136,12 +136,20 @@ function preencherTabelaJogos(jogos) {
 			tr.classList.add("derrota");
 		}
 
+        const mandante = jogo.emCasa
+            ? `<strong>${jogo.mandante}</strong>`
+            : jogo.mandante;
+
+        const visitante = !jogo.emCasa
+            ? `<strong>${jogo.visitante}</strong>`
+            : jogo.visitante;
+
 		tr.innerHTML = `
-			<td>${jogo.data}</td>
+			<td>${formatarData(jogo.data)}</td>
 			<td>${jogo.tatica}</td>
-			<td>${jogo.mandante}</td>
+			<td>${mandante}</td>
 			<td>${placar}</td>
-			<td>${jogo.visitante}</td>
+			<td>${visitante}</td>
 			<td><strong>${jogo.resultado}</strong></td>
 		`;
 
@@ -323,4 +331,8 @@ function aplicarTema(tema) {
     }
 
     localStorage.setItem("tema", tema);
+}
+
+function formatarData(data){
+    return data.replace(/-/g,"/");
 }

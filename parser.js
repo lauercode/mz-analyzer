@@ -133,6 +133,7 @@ function parseManagerZone(texto) {
             tatica,
             mandante,
             visitante,
+            emCasa: mandante === nomeTime,
             golsMandante: golsCasa,
             golsVisitante: golsFora,
             golsPro: gp,
