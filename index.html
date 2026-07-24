@@ -28,7 +28,7 @@
                 
                 <textarea
                     id="input"
-                    placeholder="Cole aqui o histórico de partidas do ManagerZone"></textarea>
+                    placeholder="Cole aqui os Resultados (Visíveis) de partidas do ManagerZone"></textarea>
             </div>
             
             <div class="buttons">
@@ -83,14 +83,14 @@
                 <table id="tabelaTaticas">
                     <thead>
                         <tr>
-                            <th>Tática</th>
-                            <th>Jogos</th>
-                            <th>Vitórias</th>
-                            <th>Empates</th>
-                            <th>Derrotas</th>
-                            <th>Gols Pró</th>
-                            <th>Gols Contra</th>
-                            <th>Aproveitamento %</th>
+                            <th data-coluna="tatica">Tática</th>
+                            <th data-coluna="jogos">Jogos</th>
+                            <th data-coluna="vitorias">Vitórias</th>
+                            <th data-coluna="empates">Empates</th>
+                            <th data-coluna="derrotas">Derrotas</th>
+                            <th data-coluna="golsPro">Gols Pró</th>
+                            <th data-coluna="golsContra">Gols Contra</th>
+                            <th data-coluna="aproveitamento">Aproveitamento %</th>
                         </tr>
                     </thead>
                     
@@ -103,11 +103,24 @@
 
                 <h2>Gráficos</h2>
 
-                <div class="graficos">
-                    <canvas id="graficoResultados"></canvas>
-                    <canvas id="graficoTaticas"></canvas>
-                    <canvas id="graficoGols"></canvas>
-                    <canvas id="graficoPizza"></canvas>
+                <div class="painelGraficos">
+
+                    <div class="graficoCard">
+                        <canvas id="graficoResultados"></canvas>
+                    </div>
+                
+                    <div class="graficoCard">
+                        <canvas id="graficoPizza"></canvas>
+                    </div>
+                
+                    <div class="graficoCard">
+                        <canvas id="graficoTaticas"></canvas>
+                    </div>
+                
+                    <div class="graficoCard">
+                        <canvas id="graficoGols"></canvas>
+                    </div>
+                
                 </div>
 
                 <hr>

@@ -6,10 +6,28 @@ document.addEventListener("DOMContentLoaded",() => {
     document
         .getElementById("btnLimpar")
         .addEventListener("click",limpar);
+
+    document
+        .getElementById("btnLimparFiltros")
+        .addEventListener("click", limparFiltros);
+
+    [
+        "filtroTatica",
+        "filtroCompeticao",
+        "dataInicio",
+        "dataFim",
+        "filtroLocal"
+    ].forEach(id=>{
+        document
+            .getElementById(id)
+            .addEventListener("change", aplicarFiltros);
+    });
 });
 
 let partidas = [];
 let partidasFiltradas = [];
+
+let estatisticas = null;
 
 const btnTema = document.getElementById("btnTema");
 const temaSalvo = localStorage.getItem("tema") || "dark";
@@ -23,6 +41,21 @@ btnTema.onclick=() => {
 
     aplicarTema(novoTema);
 };
+
+let ordenacaoTaticas = {
+    coluna: "tatica",
+    asc: true
+};
+
+document
+    .querySelectorAll("#tabelaTaticas thead th")
+    .forEach(th => {
+        th.dataset.titulo = th.textContent;
+        th.style.cursor = "pointer";
+        th.addEventListener("click", () => {
+            ordenarTabela(th.dataset.coluna);
+        });
+});
 
 function analisar() {
 
@@ -46,13 +79,6 @@ function analisar() {
 
     inicializarFiltros();
     aplicarFiltros();
-
-    const estatisticas = calcularEstatisticas(partidas);
-
-    atualizarDashboard(estatisticas);
-    preencherTabelaTaticas(estatisticas);
-    preencherTabelaJogos(partidas);
-    desenharGraficos(estatisticas);
 }
 
 function limpar() {
@@ -95,9 +121,64 @@ function atualizarDashboard(est) {
 function preencherTabelaTaticas(est) {
     const tbody = document.querySelector("#tabelaTaticas tbody");
 
+    let lista = Object.entries(est.taticas);
+
+    lista.sort((a,b) => {
+
+        const catA = a[1];
+        const catB = b[1];
+    
+        switch (ordenacaoTaticas.coluna) {
+    
+            case "tatica":
+                return ordenacaoTaticas.asc
+                    ? a[0].localeCompare(b[0])
+                    : b[0].localeCompare(a[0]);
+    
+            case "jogos":
+                return ordenacaoTaticas.asc
+                    ? catA.jogos-catB.jogos
+                    : catB.jogos-catA.jogos;
+    
+            case "vitorias":
+                return ordenacaoTaticas.asc
+                    ? catA.vitorias-catB.vitorias
+                    : catB.vitorias-catA.vitorias;
+    
+            case "empates":
+                return ordenacaoTaticas.asc
+                    ? catA.empates-catB.empates
+                    : catB.empates-catA.empates;
+    
+            case "derrotas":
+                return ordenacaoTaticas.asc
+                    ? catA.derrotas-catB.derrotas
+                    : catB.derrotas-catA.derrotas;
+    
+            case "golsPro":
+                return ordenacaoTaticas.asc
+                    ? catA.golsPro-catB.golsPro
+                    : catB.golsPro-catA.golsPro;
+    
+            case "golsContra":
+                return ordenacaoTaticas.asc
+                    ? catA.golsContra-catB.golsContra
+                    : catB.golsContra-catA.golsContra;
+    
+            case "aproveitamento":
+                return ordenacaoTaticas.asc
+                    ? catA.aproveitamento-catB.aproveitamento
+                    : catB.aproveitamento-catA.aproveitamento;
+    
+            default:
+                return 0;
+        }
+    
+    });
+
     tbody.innerHTML = "";
 
-    ordenarTaticas(est.taticas).forEach(([nome,cat]) => {
+    lista.forEach(([nome,cat]) => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
@@ -113,6 +194,8 @@ function preencherTabelaTaticas(est) {
 
         tbody.appendChild(tr);
     });
+
+    atualizarCabecalhoOrdenacao();
 }
 
 function preencherTabelaJogos(jogos) {
@@ -208,9 +291,9 @@ function inicializarFiltros() {
 
 function aplicarFiltros() {
 
-    if (!this.partidas) return [];
-
-    let partidasFiltradas = [...this.partidas];
+    if (!partidas.length) return [];
+    
+    partidasFiltradas = [...partidas];
 
     //------------------------------------------------
     // Tática
@@ -218,10 +301,9 @@ function aplicarFiltros() {
 
     const tatica = document.getElementById("filtroTatica").value;
 
-    if (tatica !== "TODAS") {
-        partidasFiltradas = partidasFiltradas.filter(j =>
-            j.tatica === tatica
-        );
+    if (tatica !== "") {
+        partidasFiltradas =
+            partidasFiltradas.filter(j => j.tatica === tatica);
     }
 
     //------------------------------------------------
@@ -230,45 +312,25 @@ function aplicarFiltros() {
 
     const competicao = document.getElementById("filtroCompeticao").value;
 
-    if (competicao !== "TODAS") {
-        partidasFiltradas = partidasFiltradas.filter(j => {
-            const nome = j.competicao.toUpperCase();
-
-            switch (competicao) {
-                case "LIGA":
-                    return nome.includes("LIGA")
-                        && !nome.includes("LIGA MUNDIAL")
-                        && !nome.includes("LIGA DE AMIGOS");
-                case "LIGA MUNDIAL":
-                    return nome.includes("LIGA MUNDIAL");
-                case "LIGA DE AMIGOS":
-                    return nome.includes("LIGA DE AMIGOS");
-                case "COPA OFICIAL":
-                    return nome.includes("COPA OFICIAL");
-                case "COPA AMIGOS":
-                    return nome.includes("COPAS DE AMIGOS");
-                case "AMISTOSO":
-                    return nome.includes("AMISTOSO");
-                case "OLHEIRO":
-                    return nome.includes("OLHEIRO");
-                default:
-                    return true;
-            }
-        });
+    if (competicao !== "") {
+        partidasFiltradas =
+            partidasFiltradas.filter(j =>
+                j.competicao === competicao
+            );
     }
 
     //------------------------------------------------
     // Período
     //------------------------------------------------
 
-    const dataInicio = document.getElementById("filtroInicio").value;
-    const dataFim = document.getElementById("filtroFim").value;
+    const dataInicio = document.getElementById("dataInicio").value;
+    const dataFim = document.getElementById("dataFim").value;
 
     if (dataInicio) {
         const inicio = new Date(dataInicio);
 
         partidasFiltradas = partidasFiltradas.filter(j => {
-            const data = this.converterData(j.data);
+            const data = converterData(j.data);
             return data >= inicio;
         });
     }
@@ -278,7 +340,7 @@ function aplicarFiltros() {
         fim.setHours(23,59,59);
 
         partidasFiltradas = partidasFiltradas.filter(j => {
-            const data = this.converterData(j.data);
+            const data = converterData(j.data);
             return data <= fim;
         });
     }
@@ -287,14 +349,13 @@ function aplicarFiltros() {
     // Casa/Fora
     //------------------------------------------------
 
-    const chkCasa = document.getElementById("filtroCasa").checked;
-    const chkFora = document.getElementById("filtroFora").checked;
+    const local = document.getElementById("filtroLocal").value;
 
-    if (chkCasa && !chkFora) {
+    if (local === "CASA") {
         partidasFiltradas = partidasFiltradas.filter(j => j.emCasa);
     }
 
-    if (!chkCasa && chkFora) {
+    if (local === "FORA" ) {
         partidasFiltradas = partidasFiltradas.filter(j => !j.emCasa);
     }
 
@@ -302,12 +363,11 @@ function aplicarFiltros() {
     // Atualiza tudo
     //------------------------------------------------
 
-    this.partidasFiltradas = partidasFiltradas;
-	this.estatisticas = calcularEstatisticas(partidasFiltradas);
-    this.atualizarDashboard(estatisticas);
-    this.preencherTabelaTaticas(estatisticas);
-    this.preencherTabelaJogos(partidasFiltradas);
-    this.desenharGraficos(estatisticas);
+    estatisticas = calcularEstatisticas(partidasFiltradas);
+    atualizarDashboard(estatisticas);
+    preencherTabelaTaticas(estatisticas);
+    preencherTabelaJogos(partidasFiltradas);
+    desenharGraficos(estatisticas);
 
     return partidasFiltradas;
 }
@@ -335,4 +395,44 @@ function aplicarTema(tema) {
 
 function formatarData(data){
     return data.replace(/-/g,"/");
+}
+
+function ordenarTabela(coluna) {
+    if (ordenacaoTaticas.coluna === coluna) {
+        ordenacaoTaticas.asc =! ordenacaoTaticas.asc;
+    } else {
+        ordenacaoTaticas.coluna = coluna;
+        ordenacaoTaticas.asc = true;
+    }
+
+    atualizarCabecalhoOrdenacao();
+    preencherTabelaTaticas(estatisticas);
+}
+
+function atualizarCabecalhoOrdenacao() {
+    document
+        .querySelectorAll("#tabelaTaticas thead th")
+        .forEach(th => {
+            const coluna = th.dataset.coluna;
+            // texto original
+            th.textContent = th.dataset.titulo;
+            th.classList.remove("ordenado");
+
+            if (coluna === ordenacaoTaticas.coluna) {
+                th.classList.add("ordenado");
+                th.textContent += ordenacaoTaticas.asc
+                    ? " ▲"
+                    : " ▼";
+            }
+        });
+}
+
+function limparFiltros() {
+    document.getElementById("filtroTatica").value = "";
+    document.getElementById("filtroCompeticao").value = "";
+    document.getElementById("dataInicio").value = "";
+    document.getElementById("dataFim").value = "";
+    document.getElementById("filtroLocal").value = "";
+
+    aplicarFiltros();
 }

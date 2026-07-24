@@ -43,16 +43,16 @@ function parseManagerZone(texto) {
         }
     
         let horario = inicio.horario;
-        let campeonato;
+        let competicao;
     
         if (inicio.mobile) {    
-            campeonato = inicio.campeonato;
+            competicao = inicio.competicao;
             i++;
         } else {
             i++;
             if (i >= linhas.length) break;
     
-            campeonato = linhas[i];
+            competicao = linhas[i];
             i++;
         }
     
@@ -122,6 +122,8 @@ function parseManagerZone(texto) {
             resultado = "D";
         }
     
+        const emCasa = mandante === nomeTime;
+
         //---------------------------------------
         // SALVA O JOGO
         //---------------------------------------
@@ -129,11 +131,11 @@ function parseManagerZone(texto) {
         jogos.push({
             data: dataAtual,
             horario,
-            campeonato,
+            competicao,
             tatica,
             mandante,
             visitante,
-            emCasa: mandante === nomeTime,
+            emCasa,
             golsMandante: golsCasa,
             golsVisitante: golsFora,
             golsPro: gp,
@@ -196,7 +198,7 @@ function lerInicioJogo(linha) {
     if (match) {
         return {
             horario:match[1],
-            campeonato:match[2],
+            competicao:match[2],
             mobile:true
         };
     }
@@ -207,7 +209,7 @@ function lerInicioJogo(linha) {
     if (match) {
         return {
             horario:match[1],
-            campeonato:null,
+            competicao:null,
             mobile:false
         };
     }
