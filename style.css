@@ -454,3 +454,18 @@ hr {
 .linhaEquipe input {
     flex:1;
 }
+
+#tabelaTaticas thead th {
+    cursor:pointer;
+    user-select:none;
+    transition:.2s;
+}
+
+#tabelaTaticas thead th:hover {
+    background:rgba(255,255,255,.08);
+}
+
+#tabelaTaticas thead th.ordenado {
+    background:#2563eb;
+    color:#fff;
+}
