@@ -52,12 +52,16 @@ function desenharGraficoResultados(est) {
             }]
         },
         options:{
+            indexAxis:"y",
             responsive:true,
             maintainAspectRatio:false,
             plugins:{
                 title:{
                     display:true,
-                    text:"Resultados Gerais"
+                    text:"Resultados Gerais",
+                    font:{
+                        size:18
+                    }
                 },
                 legend:{
                     display:false
@@ -68,7 +72,12 @@ function desenharGraficoResultados(est) {
                 y:{
                     beginAtZero:true
                 }
-            }
+            },
+            backgroundColor:[
+                "#22c55e",
+                "#eab308",
+                "#ef4444"
+            ]
         }
     });
 }
@@ -91,12 +100,16 @@ function desenharGraficoTaticas(est) {
             }]
         },
         options:{
+            indexAxis:"y",
             responsive:true,
             maintainAspectRatio:false,
             plugins:{
                 title:{
                     display:true,
-                    text:"Jogos por Tática"
+                    text:"Jogos por Tática",
+                    font:{
+                        size:18
+                    }
                 }
             },
             scales:{
@@ -126,19 +139,27 @@ function desenharGraficoGols(est) {
             }]
         },
         options:{
+            indexAxis:"y",
             responsive:true,
             maintainAspectRatio:false,
             plugins:{
                 title:{
                     display:true,
-                    text:"Gols Marcados x Sofridos"
+                    text:"Gols Marcados x Sofridos",
+                    font:{
+                        size:18
+                    }
                 }
             },
             scales:{
                 y:{
                     beginAtZero:true
                 }
-            }
+            },
+            backgroundColor:[
+                "#2563eb",
+                "#ef4444"
+            ]
         }
     });
 }
@@ -165,14 +186,23 @@ function desenharGraficoPizza(est) {
             }]
         },
         options:{
+            indexAxis:"y",
             responsive:true,
             maintainAspectRatio:false,
             plugins:{
                 title:{
                     display:true,
-                    text:"Distribuição dos Resultados"
+                    text:"Distribuição dos Resultados",
+                    font:{
+                        size:18
+                    }
                 }
-            }
+            },
+            backgroundColor:[
+                "#22c55e",
+                "#eab308",
+                "#ef4444"
+            ]
         }
     });
 }
