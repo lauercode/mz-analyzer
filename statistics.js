@@ -93,30 +93,14 @@ function calcularEstatisticas(jogos) {
     return estatisticas;
 }
 
-function ordenarTaticas(tatica) {
-    const ordem = [
-        "PC",
-        "U18",
-        "U18e19",
-        "U21",
-        "U23"
-    ];
+function ordenarTaticas(taticas) {
+    return Object.entries(taticas).sort((a,b) => {
+        if (b[1].jogos !== a[1].jogos) {
+            return b[1].jogos-a[1].jogos;
+        }
 
-    return Object.entries(tatica)
-        .sort((a,b) => {
-            const ia = ordem.indexOf(a[0]);
-            const ib = ordem.indexOf(b[0]);
-
-            if (ia === -1 && ib === -1) {
-                return a[0].localeCompare(b[0]);
-            }
-
-            if (ia === -1) return 1;
-
-            if (ib === -1) return -1;
-
-            return ia-ib;
-        });
+        return a[0].localeCompare(b[0]);
+    });
 }
 
 function percentual(v, total) {
