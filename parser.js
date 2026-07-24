@@ -7,10 +7,12 @@ function parseManagerZone(texto) {
         document.getElementById("nomeTime").value = nomeTime;
     }
 
+    texto = normalizarTexto(texto);
+
     const linhas = texto
         .split(/\r?\n/)
-        .map(l=>l.trim())
-        .filter(l=>l!="");
+        .map(l => l.trim())
+        .filter(l => l !== "");
 
     const jogos = [];
 
@@ -22,97 +24,155 @@ function parseManagerZone(texto) {
         //---------------------------------------
         // DATA
         //---------------------------------------
-
-        if (/^\d{2}-\d{2}-\d{4}$/.test(linhas[i])) {
+    
+        if (ehData(linhas[i])) {
             dataAtual = linhas[i];
             i++;
             continue;
         }
-
+    
         //---------------------------------------
-        // HORÁRIO
+        // INÍCIO DO JOGO
         //---------------------------------------
-
-        if (!/^\d{2}:\d{2}$/.test(linhas[i])) {
+    
+        const inicio = lerInicioJogo(linhas[i]);
+    
+        if (!inicio) {
             i++;
             continue;
         }
-
-        const horario = linhas[i++];
-        if (i >= linhas.length) break;
-
-        //---------------------------------------
-        // CAMPEONATO
-        //---------------------------------------
-
-        const campeonato = linhas[i++];
-        if (i+2 >= linhas.length) break;
-
+    
+        let horario = inicio.horario;
+        let campeonato;
+    
+        if (inicio.mobile) {
+    
+            campeonato = inicio.campeonato;
+            i++;
+    
+        } else {
+    
+            i++;
+    
+            if (i >= linhas.length)
+                break;
+    
+            campeonato = linhas[i];
+            i++;
+    
+        }
+    
         //---------------------------------------
         // TIMES E PLACAR
         //---------------------------------------
-
+    
+        if (i + 2 >= linhas.length)
+            break;
+    
         const mandante = linhas[i++];
         const placar = linhas[i++];
         const visitante = linhas[i++];
-
+    
         if (!/^\d+\s*-\s*\d+$/.test(placar))
             continue;
-
+    
         //---------------------------------------
-        // TÁTICA (opcional)
+        // TÁTICA (OPCIONAL)
         //---------------------------------------
-
+    
         let categoria = "Sem tática";
-
+    
         if (i < linhas.length) {
+    
             const prox = linhas[i];
-            const ehHorario = /^\d{2}:\d{2}$/.test(prox);
-            const ehData = /^\d{2}-\d{2}-\d{4}$/.test(prox);
-
-            if (!ehHorario && !ehData) {
+    
+            const novaData = ehData(prox);
+    
+            const novoJogo = lerInicioJogo(prox);
+    
+            if (!novaData && !novoJogo) {
+    
                 categoria = prox;
                 i++;
+    
             }
+    
         }
-
-        const gols = placar.split("-");
-        const golsCasa = parseInt(gols[0]);
-        const golsFora = parseInt(gols[1]);
-
-        let gp,gc;
-
+    
+        //---------------------------------------
+        // GOLS
+        //---------------------------------------
+    
+        const gols = placar.split(/\s*-\s*/);
+    
+        const golsCasa = parseInt(gols[0], 10);
+    
+        const golsFora = parseInt(gols[1], 10);
+    
+        //---------------------------------------
+        // IDENTIFICA O TIME ANALISADO
+        //---------------------------------------
+    
+        let gp;
+        let gc;
+    
         if (mandante === nomeTime) {
+    
             gp = golsCasa;
             gc = golsFora;
+    
         } else if (visitante === nomeTime) {
+    
             gp = golsFora;
             gc = golsCasa;
+    
         } else {
+    
             continue;
+    
         }
-
+    
+        //---------------------------------------
+        // RESULTADO
+        //---------------------------------------
+    
         let resultado = "E";
-
-        if (gp > gc) {
+    
+        if (gp > gc)
             resultado = "V";
-        } else if (gp < gc) {
+        else if (gp < gc)
             resultado = "D";
-        }
-
+    
+        //---------------------------------------
+        // SALVA O JOGO
+        //---------------------------------------
+    
         jogos.push({
-            data:dataAtual,
+    
+            data: dataAtual,
+    
             horario,
+    
             campeonato,
+    
             categoria,
+    
             mandante,
+    
             visitante,
-            golsMandante:golsCasa,
-            golsVisitante:golsFora,
-            golsPro:gp,
-            golsContra:gc,
+    
+            golsMandante: golsCasa,
+    
+            golsVisitante: golsFora,
+    
+            golsPro: gp,
+    
+            golsContra: gc,
+    
             resultado
+    
         });
+    
     }
 
     return jogos;
@@ -149,4 +209,44 @@ function detectarTimePrincipal(texto) {
     });
 
     return nome;
+}
+
+function normalizarTexto(texto){
+
+    return texto
+        .replace(/\u00A0/g," ")
+        .replace(/\r/g,"")
+        .trim();
+
+}
+
+function ehData(linha) {
+    return /^\d{2}-\d{2}-\d{4}$/.test(linha);
+}
+
+function lerInicioJogo(linha) {
+    
+    // Formato mobile
+    let match = linha.match(/^(\d{2}:\d{2})\s*-\s*(.+)$/);
+
+    if (match) {
+        return {
+            horario:match[1],
+            campeonato:match[2],
+            mobile:true
+        };
+    }
+
+    // Formato desktop
+    match = linha.match(/^(\d{2}:\d{2})$/);
+
+    if (match) {
+        return {
+            horario:match[1],
+            campeonato:null,
+            mobile:false
+        };
+    }
+
+    return null;
 }
