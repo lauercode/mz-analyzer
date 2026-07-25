@@ -24,6 +24,12 @@ document.addEventListener("DOMContentLoaded",() => {
     });
 });
 
+document
+    .getElementById("tipoEvolucao")
+    .addEventListener("change",() => {
+        desenharGraficoEvolucao(partidasFiltradas);
+});
+
 let partidas = [];
 let partidasFiltradas = [];
 

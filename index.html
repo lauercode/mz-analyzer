@@ -161,7 +161,6 @@
                 <h2>Gráficos</h2>
 
                 <div class="painelGraficos">
-
                     <div class="graficoCard">
                         <canvas id="graficoResultados"></canvas>
                     </div>
@@ -177,8 +176,28 @@
                     <div class="graficoCard">
                         <canvas id="graficoGols"></canvas>
                     </div>
-                
                 </div>
+
+                <hr>
+
+                <section id="secaoEvolucao">
+                    <h2>Evolução da Equipe</h2>
+                
+                    <div class="barraEvolucao">
+                        <label>Indicador:</label>
+                
+                        <select id="tipoEvolucao">
+                            <option value="aproveitamento">Aproveitamento acumulado</option>
+                            <option value="saldo">Saldo de gols acumulado</option>
+                            <option value="golsPro">Gols pró acumulados</option>
+                            <option value="golsContra">Gols contra acumulados</option>
+                        </select>
+                    </div>
+                
+                    <div class="graficoEvolucaoContainer">
+                        <canvas id="graficoEvolucao"></canvas>
+                    </div>
+                </section>
 
                 <hr>
 

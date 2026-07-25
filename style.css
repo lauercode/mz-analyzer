@@ -474,3 +474,20 @@ hr {
     background:#2563eb;
     color:#fff;
 }
+
+#secaoEvolucao {
+    margin-top:40px;
+}
+
+.barraEvolucao {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.graficoEvolucaoContainer {
+    position:relative;
+    width:100%;
+    height:420px;
+}

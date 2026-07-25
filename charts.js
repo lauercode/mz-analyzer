@@ -2,6 +2,7 @@ let graficoResultados = null;
 let graficoTaticas = null;
 let graficoGols = null;
 let graficoPizza = null;
+let graficoEvolucao = null;
 
 function destruirGraficos() {
     if (graficoResultados) {
@@ -23,6 +24,11 @@ function destruirGraficos() {
         graficoPizza.destroy();
         graficoPizza = null;
     }
+
+    if (graficoEvolucao) {
+        graficoEvolucao.destroy();
+        graficoEvolucao = null;
+    }
 }
 
 function desenharGraficos(est) {
@@ -31,6 +37,7 @@ function desenharGraficos(est) {
     desenharGraficoTaticas(est);
     desenharGraficoGols(est);
     desenharGraficoPizza(est);
+    desenharGraficoEvolucao(partidasFiltradas);
 }
 
 function desenharGraficoResultados(est) {
@@ -205,4 +212,88 @@ function desenharGraficoPizza(est) {
             ]
         }
     });
+}
+
+function desenharGraficoEvolucao(jogos) {
+    if (graficoEvolucao) {
+        graficoEvolucao.destroy();
+    }
+
+    const tipo = document.getElementById("tipoEvolucao").value;
+    const labels = [];
+    const valores = [];
+
+    let pontos = 0;
+    let saldo = 0;
+    let gp = 0;
+    let gc = 0;
+
+    jogos.forEach((jogo,indice) => {
+        labels.push(formatarData(jogo.data));
+
+        gp += jogo.golsPro;
+        gc += jogo.golsContra;
+        saldo += jogo.golsPro - jogo.golsContra;
+
+        if (jogo.resultado === "V") {
+            pontos += 3;
+        } else if (jogo.resultado === "E") {
+            pontos += 1;
+        }
+
+        switch(tipo) {
+            case "aproveitamento":
+                valores.push(
+                    pontos*100/((indice+1)*3)
+                );
+                break;
+            case "saldo":
+                valores.push(saldo);
+                break;
+            case "golsPro":
+                valores.push(gp);
+                break;
+            case "golsContra":
+                valores.push(gc);
+                break;
+        }
+    });
+
+    const titulo = {
+        aproveitamento:"Aproveitamento (%)",
+        saldo:"Saldo de gols",
+        golsPro:"Gols Pró",
+        golsContra:"Gols Contra"
+    }[tipo];
+
+    graficoEvolucao = new Chart(
+        document.getElementById("graficoEvolucao"),
+        {
+            type:"line",
+            data:{
+                labels,
+                datasets:[{
+                    label:titulo,
+                    data:valores,
+                    tension:.25,
+                    fill:false
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                plugins:{
+                    title:{
+                        display:true,
+                        text:titulo
+                    }
+                },
+                scales:{
+                    y:{
+                        beginAtZero:true
+                    }
+                }
+            }
+        }
+    );
 }
