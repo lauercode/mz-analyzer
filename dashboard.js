@@ -368,6 +368,7 @@ function aplicarFiltros() {
     preencherTabelaTaticas(estatisticas);
     preencherTabelaJogos(partidasFiltradas);
     desenharGraficos(estatisticas);
+    preencherTabelaCasaFora(estatisticas);
 
     return partidasFiltradas;
 }
@@ -435,4 +436,33 @@ function limparFiltros() {
     document.getElementById("filtroLocal").value = "";
 
     aplicarFiltros();
+}
+
+function preencherTabelaCasaFora(est) {
+    document.getElementById("cfJogosCasa").textContent = est.casa.jogos;
+    document.getElementById("cfJogosFora").textContent = est.fora.jogos;
+
+    document.getElementById("cfVCasa").textContent = est.casa.vitorias;
+    document.getElementById("cfVFora").textContent = est.fora.vitorias;
+
+    document.getElementById("cfECasa").textContent = est.casa.empates;
+    document.getElementById("cfEFora").textContent = est.fora.empates;
+
+    document.getElementById("cfDCasa").textContent = est.casa.derrotas;
+    document.getElementById("cfDFora").textContent = est.fora.derrotas;
+
+    document.getElementById("cfGPCasa").textContent = est.casa.golsPro;
+    document.getElementById("cfGPFora").textContent = est.fora.golsPro;
+
+    document.getElementById("cfGCCasa").textContent = est.casa.golsContra;
+    document.getElementById("cfGCFora").textContent = est.fora.golsContra;
+
+    document.getElementById("cfSaldoCasa").textContent = est.casa.saldo;
+    document.getElementById("cfSaldoFora").textContent = est.fora.saldo;
+
+    document.getElementById("cfApCasa").textContent = 
+        est.casa.aproveitamento.toFixed(1)+"%";
+
+    document.getElementById("cfApFora").textContent = 
+        est.fora.aproveitamento.toFixed(1)+"%";
 }

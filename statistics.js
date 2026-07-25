@@ -13,7 +13,23 @@ function calcularEstatisticas(jogos) {
         taticas: {}
     };
 
+    const casa = criarResumoLocal();
+    const fora = criarResumoLocal();
+
     jogos.forEach(jogo => {
+        const resumo = jogo.emCasa ? casa : fora;
+        resumo.jogos++;
+        resumo.golsPro += jogo.golsPro;
+        resumo.golsContra += jogo.golsContra;
+
+        if (jogo.resultado === "V") {
+            resumo.vitorias++;
+        } else if (jogo.resultado === "E") {
+            resumo.empates++;
+        } else {
+            resumo.derrotas++;
+        }
+
         estatisticas.total++;
         estatisticas.golsPro += jogo.golsPro;
         estatisticas.golsContra += jogo.golsContra;
@@ -78,6 +94,22 @@ function calcularEstatisticas(jogos) {
     }
 
     //-----------------------------------------
+    // Estatísticas Casa x Fora
+    //-----------------------------------------
+
+    [casa, fora].forEach(r => {
+        r.saldo = r.golsPro - r.golsContra;
+    
+        r.aproveitamento =
+            r.jogos===0
+            ?0
+            :(r.vitorias*3+r.empates)*100/(r.jogos*3);
+    });
+
+    estatisticas.casa = casa;
+    estatisticas.fora = fora;
+    
+    //-----------------------------------------
     // Aproveitamento por tática
     //-----------------------------------------
 
@@ -140,5 +172,18 @@ function gerarResumoGols(est) {
             est.golsPro,
             est.golsContra
         ]
+    };
+}
+
+function criarResumoLocal() {
+    return {
+        jogos:0,
+        vitorias:0,
+        empates:0,
+        derrotas:0,
+        golsPro:0,
+        golsContra:0,
+        saldo:0,
+        aproveitamento:0
     };
 }
