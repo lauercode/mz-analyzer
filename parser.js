@@ -34,55 +34,97 @@ function parseManagerZone(texto) {
         //---------------------------------------
         // INÍCIO DO JOGO
         //---------------------------------------
-    
+
         const inicio = lerInicioJogo(linhas[i]);
-    
+
         if (!inicio) {
             i++;
             continue;
         }
-    
-        let horario = inicio.horario;
-        let competicao;
-    
-        if (inicio.mobile) {    
-            competicao = inicio.competicao;
-            i++;
-        } else {
-            i++;
-            if (i >= linhas.length) break;
-    
-            competicao = linhas[i];
+
+        const horario = inicio.horario;
+        i++;
+
+        //---------------------------------------
+        // COMPETIÇÃO
+        //---------------------------------------
+
+        const linhasCompeticao = [];
+
+        while (i < linhas.length - 2) {
+
+            // encontrou início do próximo jogo
+            if (ehData(linhas[i]))
+                break;
+
+            if (lerInicioJogo(linhas[i]))
+                break;
+
+            // padrão:
+            // Time
+            // 0 - 0
+            // Outro Time
+
+            if (
+                i + 2 < linhas.length &&
+                ehPlacar(linhas[i + 1])
+            ) {
+                break;
+            }
+
+            linhasCompeticao.push(linhas[i]);
             i++;
         }
-    
+
+        const competicao =
+            normalizarCompeticao(linhasCompeticao);
+
         //---------------------------------------
-        // TIMES E PLACAR
+        // TIMES
         //---------------------------------------
-    
-        if (i + 2 >= linhas.length) break;
-    
+
+        if (i + 2 >= linhas.length)
+            break;
+
         const mandante = linhas[i++];
         const placar = linhas[i++];
         const visitante = linhas[i++];
-    
-        if (!/^\d+\s*-\s*\d+$/.test(placar)) continue;
+
+        const leituraExtras=
+            lerInformacoesExtras(linhas,i);
+
+        i=leituraExtras.indice;
+
+        const extras=leituraExtras.extras;
+
+        const tatica=
+            descobrirTatica(extras);
+
+        const categoria=
+            descobrirCategoria(extras);
+
+        if (!ehPlacar(placar))
+            continue;
     
         //---------------------------------------
         // TÁTICA (OPCIONAL)
         //---------------------------------------
     
-        let tatica = "Sem tática";
-    
-        if (i < linhas.length) {
-            const prox = linhas[i];
-            const novaData = ehData(prox);
-            const novoJogo = lerInicioJogo(prox);
-    
-            if (!novaData && !novoJogo) {
-                tatica = prox;
-                i++;
-            }
+
+        while (i < linhas.length) {
+
+            if (ehData(linhas[i]))
+                break;
+
+            if (lerInicioJogo(linhas[i]))
+                break;
+
+            if (ehCompeticaoLinha(linhas[i]))
+                break;
+
+            tatica = linhas[i];
+            i++;
+            break;
         }
     
         //---------------------------------------
@@ -129,18 +171,33 @@ function parseManagerZone(texto) {
         //---------------------------------------
     
         jogos.push({
-            data: dataAtual,
+
+            data:dataAtual,
+        
             horario,
+        
             competicao,
+        
+            categoria,
+        
             tatica,
+        
             mandante,
+        
             visitante,
+        
             emCasa,
-            golsMandante: golsCasa,
-            golsVisitante: golsFora,
-            golsPro: gp,
-            golsContra: gc,
+        
+            golsMandante:golsCasa,
+        
+            golsVisitante:golsFora,
+        
+            golsPro:gp,
+        
+            golsContra:gc,
+        
             resultado
+        
         });
     }
 
@@ -180,15 +237,73 @@ function detectarTimePrincipal(texto) {
     return nome;
 }
 
-function normalizarTexto(texto){
+function normalizarTexto(texto) {
+
     return texto
-        .replace(/\u00A0/g," ")
-        .replace(/\r/g,"")
+        .replace(/\u00A0/g, " ")  // espaços especiais
+        .replace(/\r/g, "")       // quebras Windows
+        .replace(/\t/g, " ")      // tabs
+        .replace(/[ ]+/g, " ")    // remove espaços repetidos
+        .replace(/\n{2,}/g, "\n") // remove linhas vazias repetidas
         .trim();
+}
+
+function ehPlacar(linha) {
+    return /^\d+\s*-\s*\d+$/.test(linha);
+}
+
+function ehHorario(linha) {
+    return /^\d{2}:\d{2}$/.test(linha);
 }
 
 function ehData(linha) {
     return /^\d{2}-\d{2}-\d{4}$/.test(linha);
+}
+
+function ehCategoria(linha) {
+    return /^(PC|U18|U21|U23|A JPL)$/i.test(linha);
+}
+
+function ehCompeticao(linha) {
+    const texto = linha.toUpperCase();
+
+    return [
+        "LIGA",
+        "COPA",
+        "AMISTOSO",
+        "OLHEIRO",
+        "CONFRONTO",
+        "MUNDIAL",
+        "PREMIADAS"
+    ].some(palavra => texto.includes(palavra));
+}
+
+function lerCompeticao(linhas, indice) {
+
+    const partes = [];
+
+    while (indice < linhas.length) {
+
+        const linha = linhas[indice];
+
+        // Encontrou o início do jogo (nome do mandante)
+        if (
+            !ehData(linha) &&
+            !lerInicioJogo(linha) &&
+            indice + 1 < linhas.length &&
+            /^\d+\s*-\s*\d+$/.test(linhas[indice + 1])
+        ) {
+            break;
+        }
+
+        partes.push(linha);
+        indice++;
+    }
+
+    return {
+        competicao: partes.join(" "),
+        indice
+    };
 }
 
 function lerInicioJogo(linha) {
@@ -215,4 +330,70 @@ function lerInicioJogo(linha) {
     }
 
     return null;
+}
+
+function normalizarCompeticao(linhas) {
+
+    return linhas
+        .join(" ")
+        .replace(/\s+/g," ")
+        .trim();
+
+}
+
+function lerInformacoesExtras(linhas, indice){
+
+    const extras=[];
+
+    while(indice<linhas.length){
+
+        const linha=linhas[indice];
+
+        if(ehData(linha))
+            break;
+
+        if(ehHorario(linha))
+            break;
+
+        if(
+            indice+1<linhas.length &&
+            ehPlacar(linhas[indice+1])
+        )
+            break;
+
+        extras.push(linha);
+
+        indice++;
+    }
+
+    return{
+        extras,
+        indice
+    };
+
+}
+
+function descobrirTatica(extras){
+
+    if(extras.length===0)
+        return "Sem tática";
+
+    return extras[0];
+
+}
+
+function descobrirCategoria(extras){
+
+    const categorias=[
+        "PC",
+        "U18",
+        "U21",
+        "U23",
+        "A",
+        "A JPL"
+    ];
+
+    return extras.find(e=>categorias.includes(e))
+        || "";
+
 }
