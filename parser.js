@@ -1,5 +1,4 @@
 function parseManagerZone(texto) {
-
     let nomeTime = document
         .getElementById("nomeTime")
         .value
@@ -12,10 +11,7 @@ function parseManagerZone(texto) {
 
     texto = normalizarTexto(texto);
 
-    const linhas = texto.split("\n");
-
     const secoes = separarPorData(texto);
-
     const jogos = [];
 
     for (const secao of secoes) {
@@ -23,40 +19,35 @@ function parseManagerZone(texto) {
         const partidas = separarJogos(secao.linhas);
 
         partidas.forEach(partida => {
-
             const jogo = interpretarJogo(
                 secao.data,
                 partida,
                 nomeTime
             );
 
-            if (jogo)
+            if (jogo) {
                 jogos.push(jogo);
-
+            }
         });
-
     }
 
     return jogos;
-
 }
 
-function separarPorData(texto){
-
+function separarPorData(texto) {
     const linhas = texto
         .split("\n")
         .map(l=>l.trim())
         .filter(Boolean);
 
-    const secoes=[];
+    const secoes = [];
 
-    let atual=null;
+    let atual = null;
 
-    linhas.forEach(linha=>{
+    linhas.forEach(linha => {
 
-        if(ehData(linha)){
-
-            atual={
+        if (ehData(linha)) {
+            atual = {
                 data:linha,
                 linhas:[]
             };
@@ -66,60 +57,43 @@ function separarPorData(texto){
             return;
         }
 
-        if(atual){
-
+        if (atual) {
             atual.linhas.push(linha);
-
         }
-
     });
-
+    
     return secoes;
-
 }
 
-function separarJogos(linhas){
-
+function separarJogos(linhas) {
     const jogos = [];
 
     let jogoAtual = [];
 
-    for(let i=0;i<linhas.length;i++){
-
+    for (let i=0; i<linhas.length; i++) {
         const linha = linhas[i];
 
         //---------------------------------------
         // Novo jogo
         //---------------------------------------
 
-        if(lerInicioJogo(linha)){
-
-            if(jogoAtual.length){
-
+        if (lerInicioJogo(linha)) {
+            if (jogoAtual.length) {
                 jogos.push(jogoAtual);
-
             }
-
             jogoAtual = [];
-
         }
 
-        if(jogoAtual){
-
+        if (jogoAtual) {
             jogoAtual.push(linha);
-
         }
-
     }
 
-    if(jogoAtual.length){
-
+    if (jogoAtual.length) {
         jogos.push(jogoAtual);
-
     }
 
     return jogos;
-
 }
 
 function interpretarJogo(
@@ -127,11 +101,9 @@ function interpretarJogo(
     linhasJogo,
     nomeTime
 ) {
-
     const inicio = lerInicioJogo(linhasJogo[0]);
 
-    if (!inicio)
-        return;
+    if (!inicio) return;
 
     //------------------------------------
     // Horário
@@ -147,10 +119,8 @@ function interpretarJogo(
 
     const linhasCompeticao = [];
 
-    if(inicio.competicao){
-
+    if (inicio.competicao) {
         linhasCompeticao.push(inicio.competicao);
-    
     }
 
     while (
@@ -172,15 +142,15 @@ function interpretarJogo(
         indice++;
     }
 
-    const competicao =
-        normalizarCompeticao(linhasCompeticao);
+    const competicao = normalizarCompeticao(linhasCompeticao);
 
     //------------------------------------
     // Times
     //------------------------------------
 
-    if (indice + 2 >= linhasJogo.length)
+    if (indice + 2 >= linhasJogo.length) {
         return;
+    }
 
     const mandante = linhasJogo[indice++];
     const placar = linhasJogo[indice++];
@@ -202,33 +172,30 @@ function interpretarJogo(
         extras,
         nomeTime
     );
-
 }
 
 function descobrirTatica(extras) {
-
-    if (extras.length === 0)
+    if (extras.length === 0) {
         return "Sem tática";
+    }
 
-    if (extras.length === 1)
+    if (extras.length === 1) {
         return extras[0];
+    }
 
     return extras.join(" ");
-
 }
 
 function detectarTimePrincipal(texto) {
-
     texto = normalizarTexto(texto);
 
     const linhas = texto.split("\n");
-
     const contagem = {};
 
-    for (let i = 1; i < linhas.length - 1; i++) {
-
-        if (!ehPlacar(linhas[i]))
+    for (let i=1; i<linhas.length-1; i++) {
+        if (!ehPlacar(linhas[i])){
             continue;
+        }
 
         const mandante = linhas[i - 1];
         const visitante = linhas[i + 1];
@@ -241,116 +208,74 @@ function detectarTimePrincipal(texto) {
     let maior = 0;
 
     for (const [time, quantidade] of Object.entries(contagem)) {
-
         if (quantidade > maior) {
             maior = quantidade;
             nome = time;
         }
-
     }
 
     return nome;
-
 }
 
-function normalizarCompeticao(partes){
-
+function normalizarCompeticao(partes) {
     return partes
         .join(" ")
         .replace(/\s+/g," ")
         .replace(/\s*»\s*/g," » ")
         .trim();
-
 }
 
 function normalizarTexto(texto) {
-
     return texto
-
-        // espaços especiais
-        .replace(/\u00A0/g, " ")
-
-        // zero width spaces
-        .replace(/[\u200B-\u200D\uFEFF]/g, "")
-
-        // quebra Windows
-        .replace(/\r/g, "")
-
-        // tabs
-        .replace(/\t/g, " ")
-
-        // espaços duplicados
-        .replace(/[ ]+/g, " ")
-
-        // normaliza linhas
-        .split("\n")
+        .replace(/\u00A0/g, " ")               // espaços especiais
+        .replace(/[\u200B-\u200D\uFEFF]/g, "") // zero width spaces
+        .replace(/\r/g, "")                    // quebra Windows
+        .replace(/\t/g, " ")                   // tabs
+        .replace(/[ ]+/g, " ")                 // espaços duplicados
+        .split("\n")                           // normaliza linhas
         .map(l => l.trim())
-
-        // remove linhas vazias
-        .filter(l => l !== "")
-
+        .filter(l => l !== "")                 // remove linhas vazias
         .join("\n");
-
 }
 
-function ehHorario(linha){
-
+function ehHorario(linha) {
     return /^\d{2}:\d{2}$/.test(linha)
         ||
         /^\d{2}:\d{2}\s*-/.test(linha);
-
 }
 
-function ehData(linha){
-
+function ehData(linha) {
     return /^\d{2}-\d{2}-\d{4}$/.test(linha);
-
 }
 
-function ehPlacar(linha){
-
+function ehPlacar(linha) {
     return /^\d+\s*-\s*\d+$/.test(linha);
-
 }
 
-function lerInicioJogo(linha){
-
+function lerInicioJogo(linha) {
     let match = linha.match(
         /^(\d{2}:\d{2})\s*-\s*(.+)$/
     );
 
-    if(match){
-
-        return{
-
+    if (match) {
+        return {
             horario:match[1],
-        
             competicao:match[2].trim(),
-        
             mobile:true
-        
         };
-
     }
 
     match = linha.match(/^(\d{2}:\d{2})$/);
 
-    if(match){
-
-        return{
-
+    if (match) {
+        return {
             horario:match[1],
-        
             competicao:null,
-        
             mobile:false
-        
         };
-
     }
 
     return null;
-
 }
 
 function salvarJogo(
@@ -362,8 +287,7 @@ function salvarJogo(
     visitante,
     extras,
     nomeTime
-){
-
+) {
     const tatica = descobrirTatica(extras);
 
     //--------------------------------------
@@ -371,7 +295,6 @@ function salvarJogo(
     //--------------------------------------
 
     const partes = placar.split(/\s*-\s*/);
-
     const golsMandante = Number(partes[0]);
     const golsVisitante = Number(partes[1]);
 
@@ -383,24 +306,16 @@ function salvarJogo(
     let golsContra;
     let emCasa;
 
-    if(mandante === nomeTime){
-
+    if (mandante === nomeTime) {
         golsPro = golsMandante;
         golsContra = golsVisitante;
         emCasa = true;
-
-    }
-    else if(visitante === nomeTime){
-
+    } else if (visitante === nomeTime) {
         golsPro = golsVisitante;
         golsContra = golsMandante;
         emCasa = false;
-
-    }
-    else{
-
+    } else {
         return null;
-
     }
 
     //--------------------------------------
@@ -409,42 +324,28 @@ function salvarJogo(
 
     let resultado = "E";
 
-    if(golsPro > golsContra)
+    if (golsPro > golsContra) {
         resultado = "V";
-
-    else if(golsPro < golsContra)
+    } else if (golsPro < golsContra) {
         resultado = "D";
+    }
 
     //--------------------------------------
     // Objeto
     //--------------------------------------
 
-    return{
-
+    return {
         data,
-
         horario,
-
         competicao,
-
         tatica,
-
         mandante,
-
         visitante,
-
         emCasa,
-
         golsMandante,
-
         golsVisitante,
-
         golsPro,
-
         golsContra,
-
         resultado
-
     };
-
 }
